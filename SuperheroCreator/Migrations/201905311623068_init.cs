@@ -3,7 +3,7 @@ namespace SuperheroCreator.Migrations
     using System;
     using System.Data.Entity.Migrations;
     
-    public partial class InitialMigration : DbMigration
+    public partial class init : DbMigration
     {
         public override void Up()
         {
@@ -12,9 +12,12 @@ namespace SuperheroCreator.Migrations
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
+                        superheroName = c.String(),
                         firstName = c.String(),
                         lastName = c.String(),
-                        power = c.String(),
+                        primaryAbility = c.String(),
+                        secondaryAbility = c.String(),
+                        catchPhrase = c.String(),
                     })
                 .PrimaryKey(t => t.Id);
             

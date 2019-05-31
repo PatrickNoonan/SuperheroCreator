@@ -9,10 +9,16 @@ namespace SuperheroCreator.Controllers
 {
     public class HeroController : Controller
     {
+        ApplicationDbContext context;
+        public HeroController()
+        {
+            context = new ApplicationDbContext();
+        }
         // GET: Hero
         public ActionResult Index()
         {
-            return View();
+            List<Hero>heroList = context.Heroes.ToList<Hero>();
+            return View(heroList);
         }
 
         // GET: Hero/Details/5
@@ -24,19 +30,21 @@ namespace SuperheroCreator.Controllers
         // GET: Hero/Create
         public ActionResult Create()
         {
-            Hero Batman = new Hero();
-            return View(Batman);
+            Hero hero = new Hero();
+            return View(hero);
         }
 
         // POST: Hero/Create
         [HttpPost]
-        public ActionResult Create(Hero Batman)
+        public ActionResult Create(Hero hero)
         {
             try
             {
                 // TODO: Add insert logic here
-
-                return RedirectToAction("Index");
+                //create application dbcontext, create user and pass it to the database
+                context.Heroes.Add(hero);
+                context.SaveChanges();
+                return RedirectToAction("Index", "Home");
             }
             catch
             {
@@ -47,18 +55,18 @@ namespace SuperheroCreator.Controllers
         // GET: Hero/Edit/5
         public ActionResult Edit(int id)
         {
-            return View();
+            return View(id);
         }
 
         // POST: Hero/Edit/5
         [HttpPost]
-        public ActionResult Edit(int id, FormCollection collection)
+        public ActionResult Edit(int id, Hero hero)
         {
             try
             {
                 // TODO: Add update logic here
 
-                return RedirectToAction("Index");
+                return RedirectToAction("Index", "Home");
             }
             catch
             {
@@ -69,18 +77,21 @@ namespace SuperheroCreator.Controllers
         // GET: Hero/Delete/5
         public ActionResult Delete(int id)
         {
-            return View();
+            Hero foundHero = context.Heroes.Find(id);
+            return View(foundHero);
         }
 
         // POST: Hero/Delete/5
-        [HttpPost]
-        public ActionResult Delete(int id, FormCollection collection)
+        [HttpPost, ActionName("Delete")]
+        public ActionResult DeleteConfirmed(Hero hero)
         {
             try
             {
                 // TODO: Add delete logic here
-
-                return RedirectToAction("Index");
+                
+                context.Heroes.Remove(hero);
+                context.SaveChanges();
+                return RedirectToAction("Index", "Home");
             }
             catch
             {
