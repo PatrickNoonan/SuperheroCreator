@@ -22,9 +22,18 @@ namespace SuperheroCreator.Controllers
         }
 
         // GET: Hero/Details/5
-        public ActionResult Details(int id)
+        public ActionResult Details(int? id)
         {
-            return View();
+            if (id == null)
+            {
+                //return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Hero hero = context.Heroes.Find(id);
+            if (hero == null)
+            {
+                return HttpNotFound();
+            }
+            return View(hero);
         }
 
         // GET: Hero/Create
@@ -55,18 +64,24 @@ namespace SuperheroCreator.Controllers
         // GET: Hero/Edit/5
         public ActionResult Edit(int id)
         {
-            return View(id);
+            Hero hero = context.Heroes.Find(id);
+            return View(hero);
         }
 
         // POST: Hero/Edit/5
+        [AcceptVerbs(HttpVerbs.Post)]
         [HttpPost]
-        public ActionResult Edit(int id, Hero hero)
+        public ActionResult Edit(int id, FormCollection formValues)
         {
             try
             {
                 // TODO: Add update logic here
+                Hero hero = context.Heroes.Find(id);
+                UpdateModel(hero);
 
-                return RedirectToAction("Index", "Home");
+                context.SaveChanges();
+
+                return RedirectToAction("Details", new { id = hero.Id });
             }
             catch
             {
@@ -75,20 +90,30 @@ namespace SuperheroCreator.Controllers
         }
 
         // GET: Hero/Delete/5
-        public ActionResult Delete(int id)
+        public ActionResult Delete(int? id)
         {
-            Hero foundHero = context.Heroes.Find(id);
-            return View(foundHero);
+            //Hero foundHero = context.Heroes.Find(id);
+            //return View(foundHero);
+            if (id == null)
+            {
+                //return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
+            }
+            Hero hero = context.Heroes.Find(id);
+            if (hero == null)
+            {
+                return HttpNotFound();
+            }
+            return View(hero);
         }
 
         // POST: Hero/Delete/5
         [HttpPost, ActionName("Delete")]
-        public ActionResult DeleteConfirmed(Hero hero)
+        public ActionResult DeleteConfirmed(int id)
         {
             try
             {
                 // TODO: Add delete logic here
-                
+                Hero hero = context.Heroes.Find(id);
                 context.Heroes.Remove(hero);
                 context.SaveChanges();
                 return RedirectToAction("Index", "Home");
